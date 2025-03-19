@@ -1,0 +1,12 @@
+sentence-transformers
+langchain
+pypdf
+langchain-community
+langchain_huggingface
+# langchain_chroma
+# chroma_db
+faiss-cpu
+sumy
+streamlit
+SentencePiece 
+ctransformers
