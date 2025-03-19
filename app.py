@@ -1,13 +1,13 @@
 import streamlit as st
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
 from uuid import uuid4
 from ctransformers import AutoModelForCausalLM
-from transformers import pipeline
+from transformers import pipeline, AutoModelForSeq2SeqLM
 
 # Function to load PDF and split it into chunks
 def load_and_process_pdf(file_path):
@@ -45,6 +45,8 @@ def retrieve_docs(vector_store, query):
     return content
 
 # Function to generate a response using the language model
+import asyncio
+
 def generate_response(content, question):
     model = AutoModelForCausalLM.from_pretrained(
         "TheBloke/Mistral-7B-Instruct-v0.1-GGUF",
@@ -60,9 +62,12 @@ def generate_response(content, question):
     ------------------
     question: {question}
     """
-    
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     response = model(prompt, max_new_tokens=200)
     return response
+
 
 # Function to translate response to Hindi
 def translate_to_hindi(text):
